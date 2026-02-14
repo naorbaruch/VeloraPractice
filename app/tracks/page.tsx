@@ -12,34 +12,43 @@ export default async function TracksPage() {
     .order("order", { ascending: true });
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-2">Tracks</h1>
-      <p className="text-muted mb-8">
-        Choose a topic area. Each track contains independent scenarios you can
-        explore in any order.
+    <div className="max-w-3xl mx-auto px-8 py-16">
+      <p className="text-sm font-medium text-accent tracking-wide uppercase mb-4">
+        Tracks
+      </p>
+      <h1 className="text-3xl font-bold tracking-tight mb-3">
+        Choose a topic
+      </h1>
+      <p className="text-muted mb-12">
+        Each track contains independent scenarios you can explore in any order.
       </p>
 
       {!tracks || tracks.length === 0 ? (
-        <div className="p-8 border border-border rounded-lg text-center text-muted">
+        <div className="py-16 text-center text-muted">
           No tracks available yet. Check back soon.
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="space-y-4">
           {tracks.map((track) => {
             const scenarioCount =
-              (track.scenarios as unknown as { count: number }[])?.[0]?.count ?? 0;
+              (track.scenarios as unknown as { count: number }[])?.[0]?.count ??
+              0;
             return (
               <Link
                 key={track.id}
                 href={`/tracks/${track.slug}`}
-                className="block p-6 border border-border rounded-lg hover:border-accent/40 transition-colors"
+                className="block p-8 border border-border/60 rounded-xl hover:border-foreground/20 transition-all duration-200"
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h2 className="text-lg font-semibold mb-1">{track.title}</h2>
-                    <p className="text-sm text-muted">{track.description}</p>
+                    <h2 className="text-lg font-semibold mb-2">
+                      {track.title}
+                    </h2>
+                    <p className="text-sm text-muted leading-relaxed">
+                      {track.description}
+                    </p>
                   </div>
-                  <span className="text-xs text-muted whitespace-nowrap ml-4">
+                  <span className="text-xs text-muted-light whitespace-nowrap ml-6 pt-1">
                     {scenarioCount} scenario{scenarioCount !== 1 ? "s" : ""}
                   </span>
                 </div>

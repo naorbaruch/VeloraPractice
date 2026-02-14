@@ -30,10 +30,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Header />
-        <main className="max-w-4xl mx-auto px-6 py-8">{children}</main>
-        <footer className="border-t border-border mt-16">
-          <div className="max-w-4xl mx-auto px-6 py-6 text-sm text-muted">
-            <p>
+        <main className="pt-16">{children}</main>
+        <footer className="border-t border-border/50 mt-24">
+          <div className="max-w-5xl mx-auto px-8 py-8">
+            <p className="text-xs text-muted-light leading-relaxed max-w-lg">
               This is an educational tool only. It does not constitute legal or
               financial advice. No jurisdiction-specific reliance.
             </p>

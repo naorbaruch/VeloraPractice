@@ -43,28 +43,6 @@ function incrementAnonymousCount(): number {
   return count;
 }
 
-function ScoreBar({ label, score }: { label: string; score: number }) {
-  const color =
-    score >= 80
-      ? "bg-success"
-      : score >= 50
-        ? "bg-warning"
-        : "bg-error";
-
-  return (
-    <div className="flex items-center gap-3">
-      <span className="text-xs w-40 shrink-0">{label}</span>
-      <div className="flex-1 h-2 bg-border rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all duration-700 ${color}`}
-          style={{ width: `${score}%` }}
-        />
-      </div>
-      <span className="text-xs font-mono w-8 text-right">{score}</span>
-    </div>
-  );
-}
-
 export default function ScenarioInteraction({
   questions,
 }: {
@@ -75,6 +53,7 @@ export default function ScenarioInteraction({
   const [isRevealed, setIsRevealed] = useState(false);
   const [showGate, setShowGate] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -110,7 +89,6 @@ export default function ScenarioInteraction({
 
     setIsRevealed(true);
 
-    // Save progress if user is logged in
     if (userId) {
       const option = question.answer_options.find(
         (a) => a.id === selectedAnswer
@@ -136,29 +114,35 @@ export default function ScenarioInteraction({
       setSelectedAnswer(null);
       setIsRevealed(false);
       setShowGate(false);
+      setExpandedSection(null);
     }
   }
 
+  function toggleSection(section: string) {
+    setExpandedSection(expandedSection === section ? null : section);
+  }
+
+  // Gate screen
   if (showGate && !isRevealed) {
     return (
-      <div className="p-8 border-2 border-accent/30 rounded-lg text-center">
-        <h2 className="text-xl font-semibold mb-3">
+      <div className="text-center py-16">
+        <h2 className="text-2xl font-bold mb-3">
           Create an account to continue
         </h2>
-        <p className="text-sm text-muted mb-6">
-          You&apos;ve answered 5 questions. Sign up to save your progress and
+        <p className="text-muted mb-10 max-w-sm mx-auto">
+          You&apos;ve used your 5 free questions. Sign up to save progress and
           keep training.
         </p>
         <div className="flex gap-4 justify-center">
           <a
             href="/auth/signup"
-            className="px-6 py-3 bg-accent text-white rounded-md hover:bg-accent-light transition-colors font-medium"
+            className="px-8 py-4 bg-foreground text-background rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
           >
             Create Account
           </a>
           <a
             href="/auth/login"
-            className="px-6 py-3 border border-border rounded-md hover:bg-card transition-colors font-medium"
+            className="px-8 py-4 text-sm font-medium text-muted hover:text-foreground transition-colors"
           >
             Sign In
           </a>
@@ -169,28 +153,36 @@ export default function ScenarioInteraction({
 
   return (
     <div>
-      <div className="mb-6">
-        <div className="text-xs text-muted mb-2">
+      {/* Question */}
+      <div className="mb-10">
+        <p className="text-xs text-muted mb-4">
           Question {currentQuestion + 1} of {questions.length}
-        </div>
-        <h2 className="text-lg font-semibold">{question.prompt}</h2>
+        </p>
+        <h2 className="text-xl font-semibold leading-relaxed">
+          {question.prompt}
+        </h2>
       </div>
 
-      <div className="grid gap-3 mb-6">
+      {/* Answer options */}
+      <div className="space-y-3 mb-10">
         {question.answer_options
           .sort((a, b) => a.label.localeCompare(b.label))
           .map((option) => {
-            let borderClass = "border-border hover:border-accent/40";
-            if (selectedAnswer === option.id && !isRevealed) {
-              borderClass = "border-accent ring-2 ring-accent/20";
+            const isSelected = selectedAnswer === option.id;
+
+            let stateStyles = "border-border/60 hover:border-foreground/20";
+            if (isSelected && !isRevealed) {
+              stateStyles = "border-foreground ring-1 ring-foreground/10";
             }
             if (isRevealed) {
               if (option.is_correct) {
-                borderClass = "border-success ring-2 ring-success/20";
-              } else if (selectedAnswer === option.id) {
-                borderClass = "border-error ring-2 ring-error/20";
+                stateStyles =
+                  "border-success bg-success-subtle";
+              } else if (isSelected) {
+                stateStyles =
+                  "border-error bg-error-subtle";
               } else {
-                borderClass = "border-border opacity-60";
+                stateStyles = "border-border/30 opacity-50";
               }
             }
 
@@ -199,134 +191,185 @@ export default function ScenarioInteraction({
                 key={option.id}
                 onClick={() => handleSelect(option.id)}
                 disabled={isRevealed}
-                className={`w-full text-left p-4 border-2 rounded-lg transition-all ${borderClass} ${
+                className={`w-full text-left px-6 py-5 border rounded-xl transition-all duration-200 ${stateStyles} ${
                   isRevealed ? "cursor-default" : "cursor-pointer"
                 }`}
               >
-                <div className="flex gap-3">
-                  <span className="font-semibold text-accent shrink-0">
-                    {option.label}.
+                <div className="flex items-start gap-4">
+                  <span
+                    className={`text-sm font-bold shrink-0 w-7 h-7 rounded-full flex items-center justify-center ${
+                      isSelected && !isRevealed
+                        ? "bg-foreground text-background"
+                        : isRevealed && option.is_correct
+                          ? "bg-success text-white"
+                          : isRevealed && isSelected
+                            ? "bg-error text-white"
+                            : "bg-border/50 text-muted"
+                    }`}
+                  >
+                    {option.label}
                   </span>
-                  <span className="text-sm">{option.text}</span>
+                  <span className="text-[15px] leading-relaxed pt-0.5">
+                    {option.text}
+                  </span>
                 </div>
               </button>
             );
           })}
       </div>
 
+      {/* Submit button */}
       {!isRevealed && (
         <button
           onClick={handleSubmit}
           disabled={!selectedAnswer}
-          className="px-6 py-3 bg-accent text-white rounded-md hover:bg-accent-light transition-colors font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-8 py-4 bg-foreground text-background rounded-full text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-20 disabled:cursor-not-allowed"
         >
           Lock In Answer
         </button>
       )}
 
+      {/* Reveal */}
       {isRevealed && selectedOption && correctOption && explanation && (
-        <div className="mt-8 space-y-6">
-          {/* Score */}
-          <div className="p-6 border border-border rounded-lg bg-card">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Your Score</h3>
-              <div className="text-2xl font-bold text-accent">
-                {selectedOption.composite}
-              </div>
+        <div className="mt-12">
+          {/* Score — single prominent number */}
+          <div className="text-center py-12 border-b border-border/50">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-4">
+              Your Score
+            </p>
+            <div
+              className={`text-7xl font-bold tabular-nums ${
+                selectedOption.composite >= 80
+                  ? "text-success"
+                  : selectedOption.composite >= 50
+                    ? "text-warning"
+                    : "text-error"
+              }`}
+            >
+              {selectedOption.composite}
             </div>
-            <div className="space-y-3">
-              <ScoreBar
-                label="Legal Accuracy"
-                score={selectedOption.legal_accuracy}
-              />
-              <ScoreBar
-                label="Market Practice"
-                score={selectedOption.market_practice}
-              />
-              <ScoreBar
-                label="Risk Awareness"
-                score={selectedOption.risk_awareness}
-              />
-              <ScoreBar
-                label="Perspective Awareness"
-                score={selectedOption.perspective_awareness}
-              />
-            </div>
+            <p className="text-sm text-muted mt-3">out of 100</p>
           </div>
 
           {/* Correct answer explanation */}
-          <div className="p-6 border border-success/30 rounded-lg bg-success/5">
-            <h3 className="font-semibold text-success mb-3">
-              Correct Answer: {correctOption.label}
-            </h3>
-            <div className="text-sm leading-relaxed whitespace-pre-line">
+          <div className="py-12 border-b border-border/50">
+            <p className="text-xs font-semibold uppercase tracking-widest text-success mb-6">
+              Correct Answer &mdash; {correctOption.label}
+            </p>
+            <div className="text-[15px] leading-[1.8] whitespace-pre-line text-foreground/90">
               {explanation.correct_explanation}
             </div>
           </div>
 
-          {/* Perspectives */}
-          {(explanation.lender_perspective ||
-            explanation.borrower_perspective) && (
-            <div className="grid md:grid-cols-2 gap-4">
-              {explanation.lender_perspective && (
-                <div className="p-6 border border-border rounded-lg">
-                  <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted">
+          {/* Expandable sections */}
+          <div className="divide-y divide-border/50">
+            {/* Lender perspective */}
+            {explanation.lender_perspective && (
+              <div>
+                <button
+                  onClick={() => toggleSection("lender")}
+                  className="w-full flex items-center justify-between py-6 text-left"
+                >
+                  <span className="text-sm font-semibold">
                     Lender Perspective
-                  </h3>
-                  <div className="text-sm leading-relaxed whitespace-pre-line">
+                  </span>
+                  <span className="text-muted text-lg">
+                    {expandedSection === "lender" ? "\u2212" : "+"}
+                  </span>
+                </button>
+                {expandedSection === "lender" && (
+                  <div className="pb-8 text-[15px] leading-[1.8] whitespace-pre-line text-foreground/90">
                     {explanation.lender_perspective}
                   </div>
-                </div>
-              )}
-              {explanation.borrower_perspective && (
-                <div className="p-6 border border-border rounded-lg">
-                  <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted">
+                )}
+              </div>
+            )}
+
+            {/* Borrower perspective */}
+            {explanation.borrower_perspective && (
+              <div>
+                <button
+                  onClick={() => toggleSection("borrower")}
+                  className="w-full flex items-center justify-between py-6 text-left"
+                >
+                  <span className="text-sm font-semibold">
                     Borrower Perspective
-                  </h3>
-                  <div className="text-sm leading-relaxed whitespace-pre-line">
+                  </span>
+                  <span className="text-muted text-lg">
+                    {expandedSection === "borrower" ? "\u2212" : "+"}
+                  </span>
+                </button>
+                {expandedSection === "borrower" && (
+                  <div className="pb-8 text-[15px] leading-[1.8] whitespace-pre-line text-foreground/90">
                     {explanation.borrower_perspective}
                   </div>
+                )}
+              </div>
+            )}
+
+            {/* Why others are wrong */}
+            <div>
+              <button
+                onClick={() => toggleSection("wrong")}
+                className="w-full flex items-center justify-between py-6 text-left"
+              >
+                <span className="text-sm font-semibold">
+                  Why Other Answers Are Wrong
+                </span>
+                <span className="text-muted text-lg">
+                  {expandedSection === "wrong" ? "\u2212" : "+"}
+                </span>
+              </button>
+              {expandedSection === "wrong" && (
+                <div className="pb-8 space-y-6">
+                  {question.answer_options
+                    .filter((a) => !a.is_correct)
+                    .sort((a, b) => a.label.localeCompare(b.label))
+                    .map((option) => (
+                      <div key={option.id}>
+                        <p className="text-sm font-semibold mb-1">
+                          {option.label}. {option.text}
+                        </p>
+                        <p className="text-[15px] leading-relaxed text-muted">
+                          {option.wrong_explanation}
+                        </p>
+                      </div>
+                    ))}
                 </div>
               )}
             </div>
-          )}
 
-          {/* Why other answers are wrong */}
-          <div className="p-6 border border-border rounded-lg">
-            <h3 className="font-semibold mb-4">Why Other Answers Are Wrong</h3>
-            <div className="space-y-4">
-              {question.answer_options
-                .filter((a) => !a.is_correct)
-                .sort((a, b) => a.label.localeCompare(b.label))
-                .map((option) => (
-                  <div key={option.id}>
-                    <div className="text-sm font-semibold mb-1">
-                      {option.label}. {option.text}
-                    </div>
-                    <p className="text-sm text-muted">
-                      {option.wrong_explanation}
-                    </p>
-                  </div>
-                ))}
+            {/* Learning outcome */}
+            <div>
+              <button
+                onClick={() => toggleSection("outcome")}
+                className="w-full flex items-center justify-between py-6 text-left"
+              >
+                <span className="text-sm font-semibold text-accent">
+                  Learning Outcome
+                </span>
+                <span className="text-muted text-lg">
+                  {expandedSection === "outcome" ? "\u2212" : "+"}
+                </span>
+              </button>
+              {expandedSection === "outcome" && (
+                <div className="pb-8 text-[15px] leading-[1.8] whitespace-pre-line text-foreground/90">
+                  {explanation.learning_outcome}
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Learning outcome */}
-          <div className="p-6 border border-accent/20 rounded-lg bg-accent/5">
-            <h3 className="font-semibold mb-3 text-accent">Learning Outcome</h3>
-            <div className="text-sm leading-relaxed whitespace-pre-line">
-              {explanation.learning_outcome}
-            </div>
-          </div>
-
-          {/* Next button */}
+          {/* Next */}
           {currentQuestion < questions.length - 1 && (
-            <button
-              onClick={handleNext}
-              className="px-6 py-3 bg-accent text-white rounded-md hover:bg-accent-light transition-colors font-medium"
-            >
-              Next Question
-            </button>
+            <div className="pt-12">
+              <button
+                onClick={handleNext}
+                className="px-8 py-4 bg-foreground text-background rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
+              >
+                Next Question
+              </button>
+            </div>
           )}
         </div>
       )}

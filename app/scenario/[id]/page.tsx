@@ -12,7 +12,6 @@ export default async function ScenarioPage({
   const { id } = await params;
   const supabase = await createClient();
 
-  // Fetch scenario
   const { data: scenario } = await supabase
     .from("scenarios")
     .select("*, tracks(title, slug)")
@@ -21,68 +20,93 @@ export default async function ScenarioPage({
 
   if (!scenario) notFound();
 
-  // Fetch questions with answers and explanations
   const { data: questions } = await supabase
     .from("questions")
-    .select(
-      "*, answer_options(*), explanations(*)"
-    )
+    .select("*, answer_options(*), explanations(*)")
     .eq("scenario_id", id)
     .order("order", { ascending: true });
 
   const track = scenario.tracks as unknown as { title: string; slug: string };
+  const difficultyLabel: Record<string, string> = {
+    beginner: "Beginner",
+    intermediate: "Intermediate",
+    advanced: "Advanced",
+  };
 
   return (
-    <div>
-      <div className="mb-6">
+    <div className="max-w-3xl mx-auto px-8">
+      {/* Breadcrumb */}
+      <div className="pt-8 pb-4">
         <a
           href={`/tracks/${track.slug}`}
-          className="text-sm text-muted hover:text-foreground transition-colors"
+          className="text-[13px] text-muted hover:text-foreground transition-colors"
         >
           &larr; {track.title}
         </a>
       </div>
 
-      <div className="mb-8">
-        <div className="text-xs text-muted mb-1">{scenario.scenario_code}</div>
-        <h1 className="text-2xl font-bold mb-4">{scenario.title}</h1>
-
-        <div className="p-6 border border-border rounded-lg mb-6 bg-card">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted mb-3">
-            Context
-          </h2>
-          <div className="text-sm leading-relaxed whitespace-pre-line">
-            {scenario.context}
-          </div>
+      {/* Scenario header */}
+      <div className="py-12 border-b border-border/50">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-xs font-mono text-muted">
+            {scenario.scenario_code}
+          </span>
+          <span className="text-xs text-muted">&middot;</span>
+          <span className="text-xs text-muted">
+            {difficultyLabel[scenario.difficulty] || scenario.difficulty}
+          </span>
         </div>
+        <h1 className="text-3xl font-bold tracking-tight leading-tight">
+          {scenario.title}
+        </h1>
+      </div>
 
-        <div className="p-6 border border-border rounded-lg mb-6 bg-card">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted mb-3">
-            Key Assumptions
-          </h2>
-          <ul className="text-sm space-y-2">
-            {(scenario.assumptions as string[]).map(
-              (assumption: string, i: number) => (
-                <li key={i} className="flex gap-2">
-                  <span className="text-accent font-medium shrink-0">&bull;</span>
-                  {assumption}
-                </li>
-              )
-            )}
-          </ul>
-        </div>
-
-        <div className="p-6 border-2 border-accent/20 rounded-lg mb-8 bg-accent/5">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-accent mb-3">
-            Trigger Event
-          </h2>
-          <p className="text-sm leading-relaxed">{scenario.trigger_event}</p>
+      {/* Context */}
+      <div className="py-12 border-b border-border/50">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-6">
+          Context
+        </p>
+        <div className="text-[15px] leading-[1.8] whitespace-pre-line text-foreground/90">
+          {scenario.context}
         </div>
       </div>
 
-      {questions && questions.length > 0 && (
-        <ScenarioInteraction questions={questions} />
-      )}
+      {/* Assumptions */}
+      <div className="py-12 border-b border-border/50">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-6">
+          Key Assumptions
+        </p>
+        <ul className="space-y-3">
+          {(scenario.assumptions as string[]).map(
+            (assumption: string, i: number) => (
+              <li
+                key={i}
+                className="text-[15px] leading-relaxed flex gap-3 text-foreground/90"
+              >
+                <span className="text-muted-light shrink-0">&bull;</span>
+                {assumption}
+              </li>
+            )
+          )}
+        </ul>
+      </div>
+
+      {/* Trigger */}
+      <div className="py-12 border-b border-border/50">
+        <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-6">
+          Trigger Event
+        </p>
+        <p className="text-lg leading-relaxed font-medium">
+          {scenario.trigger_event}
+        </p>
+      </div>
+
+      {/* Questions */}
+      <div className="py-16">
+        {questions && questions.length > 0 && (
+          <ScenarioInteraction questions={questions} />
+        )}
+      </div>
     </div>
   );
 }

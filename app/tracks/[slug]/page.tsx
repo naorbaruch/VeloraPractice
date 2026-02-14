@@ -33,39 +33,37 @@ export default async function TrackDetailPage({
   };
 
   return (
-    <div>
+    <div className="max-w-3xl mx-auto px-8 py-16">
       <Link
         href="/tracks"
-        className="text-sm text-muted hover:text-foreground transition-colors mb-4 inline-block"
+        className="text-[13px] text-muted hover:text-foreground transition-colors mb-8 inline-block"
       >
         &larr; All Tracks
       </Link>
-      <h1 className="text-2xl font-bold mb-2">{track.title}</h1>
-      <p className="text-muted mb-8">{track.description}</p>
+      <h1 className="text-3xl font-bold tracking-tight mb-3">{track.title}</h1>
+      <p className="text-muted mb-12">{track.description}</p>
 
       {!scenarios || scenarios.length === 0 ? (
-        <div className="p-8 border border-border rounded-lg text-center text-muted">
+        <div className="py-16 text-center text-muted">
           No scenarios in this track yet.
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="space-y-4">
           {scenarios.map((scenario) => (
             <Link
               key={scenario.id}
               href={`/scenario/${scenario.id}`}
-              className="block p-6 border border-border rounded-lg hover:border-accent/40 transition-colors"
+              className="block p-8 border border-border/60 rounded-xl hover:border-foreground/20 transition-all duration-200"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="text-xs text-muted mb-1">
+                  <p className="text-xs font-mono text-muted-light mb-2">
                     {scenario.scenario_code}
-                  </div>
-                  <h2 className="text-lg font-semibold mb-1">
-                    {scenario.title}
-                  </h2>
+                  </p>
+                  <h2 className="text-lg font-semibold">{scenario.title}</h2>
                 </div>
                 <span
-                  className={`text-xs font-medium capitalize ${difficultyColor[scenario.difficulty] || "text-muted"}`}
+                  className={`text-xs font-medium capitalize ml-6 pt-1 ${difficultyColor[scenario.difficulty] || "text-muted"}`}
                 >
                   {scenario.difficulty}
                 </span>
