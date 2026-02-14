@@ -16,16 +16,14 @@ export default async function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="min-h-[85vh] flex flex-col justify-center max-w-3xl mx-auto px-8">
-        <p className="text-sm font-medium text-accent tracking-wide uppercase mb-6">
+      <section className="py-20 max-w-5xl mx-auto px-8">
+        <p className="text-sm font-medium text-accent tracking-wide uppercase mb-4">
           Project Finance Training
         </p>
-        <h1 className="text-5xl md:text-6xl font-bold leading-[1.1] tracking-tight mb-6">
-          Train your
-          <br />
-          deal judgment.
+        <h1 className="text-4xl md:text-5xl font-bold leading-[1.1] tracking-tight mb-5">
+          Train your deal judgment.
         </h1>
-        <p className="text-xl text-muted leading-relaxed max-w-lg mb-12">
+        <p className="text-lg text-muted leading-relaxed max-w-xl mb-8">
           Real scenarios. Real ambiguity. Learn how project finance deals
           actually work — not black-letter law.
         </p>
@@ -52,7 +50,7 @@ export default async function HomePage() {
       </section>
 
       {/* How it works */}
-      <section className="max-w-3xl mx-auto px-8 py-24 border-t border-border/50">
+      <section className="max-w-5xl mx-auto px-8 py-16 border-t border-border/50">
         <p className="text-sm font-medium text-accent tracking-wide uppercase mb-10">
           How it works
         </p>
@@ -88,7 +86,7 @@ export default async function HomePage() {
       </section>
 
       {/* Scoring */}
-      <section className="max-w-3xl mx-auto px-8 py-24 border-t border-border/50">
+      <section className="max-w-5xl mx-auto px-8 py-16 border-t border-border/50">
         <p className="text-sm font-medium text-accent tracking-wide uppercase mb-4">
           Composite Scoring
         </p>
@@ -118,7 +116,7 @@ export default async function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-3xl mx-auto px-8 py-24 border-t border-border/50 text-center">
+      <section className="max-w-5xl mx-auto px-8 py-16 border-t border-border/50 text-center">
         <h2 className="text-2xl font-bold mb-3">Ready to test your judgment?</h2>
         <p className="text-muted mb-8">
           5 free questions. No credit card. No fluff.
