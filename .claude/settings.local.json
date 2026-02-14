@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(keybindings-help)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npx create-next-app@latest:*)",
+      "Bash(npm install:*)",
+      "Bash(npx next build)",
+      "Bash(git status:*)",
+      "WebFetch(domain:velora-practice-simulation.vercel.app)",
+      "Bash(npx vercel logs:*)"
+    ]
+  }
+}
