@@ -528,6 +528,41 @@ A scenario is **not acceptable** if:
 
 ---
 
+## 19. V1 MVP Implementation Checklist
+
+| #  | Feature                                              | Status  |
+| -- | ---------------------------------------------------- | ------- |
+| 1  | Next.js + Tailwind project setup                     | Done    |
+| 2  | Supabase client (browser + server)                   | Done    |
+| 3  | Database schema (6 tables + RLS policies)            | Done    |
+| 4  | Seed data — canonical scenario PF-COC-001            | Done    |
+| 5  | Homepage with CTA                                    | Done    |
+| 6  | Tracks listing page                                  | Done    |
+| 7  | Track detail page (scenarios list)                   | Done    |
+| 8  | Scenario page (context, assumptions, trigger)        | Done    |
+| 9  | Interactive Q&A (select, lock-in, reveal)            | Done    |
+| 10 | Composite score display with bars                    | Done    |
+| 11 | Explanation engine (correct, perspectives, wrong answers, learning outcome) | Done |
+| 12 | Auth — signup (email + password)                     | Done    |
+| 13 | Auth — login                                         | Done    |
+| 14 | Auth — callback route                                | Done    |
+| 15 | Auth — session middleware                             | Done    |
+| 16 | Header shows auth state (sign in / sign out)         | Done    |
+| 17 | Anonymous 5-question gate (localStorage)             | Done    |
+| 18 | Save user progress to DB                             | Done    |
+| 19 | Dashboard (stats + recent answers)                   | Done    |
+| 20 | Legal disclaimer in footer                           | Done    |
+| 21 | `.env.local` gitignored                              | Done    |
+| 22 | Vercel environment variables set                     | Pending |
+| 23 | Production deploy on Vercel                          | Pending |
+| 24 | Admin panel for scenario authoring                   | Future  |
+| 25 | Additional scenario content                          | Future  |
+| 26 | Password reset / email verification                  | Future  |
+| 27 | Analytics tracking                                   | Future  |
+| 28 | Feature flags for monetization                       | Future  |
+
+---
+
 ## Final Note
 
 This canonical scenario and template are now part of the definition of the product.
