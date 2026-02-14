@@ -10,6 +10,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -21,6 +22,9 @@ export default function SignupPage() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
 
     if (error) {
@@ -29,8 +33,22 @@ export default function SignupPage() {
       return;
     }
 
-    router.push("/");
-    router.refresh();
+    setSent(true);
+    setLoading(false);
+  }
+
+  if (sent) {
+    return (
+      <div className="max-w-sm mx-auto py-16 text-center">
+        <h1 className="text-2xl font-bold mb-3">Check your email</h1>
+        <p className="text-sm text-muted mb-2">
+          We sent a confirmation link to <strong>{email}</strong>.
+        </p>
+        <p className="text-sm text-muted">
+          Click the link in the email to activate your account, then come back and sign in.
+        </p>
+      </div>
+    );
   }
 
   return (
