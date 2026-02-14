@@ -154,8 +154,8 @@ export default function ScenarioInteraction({
   return (
     <div>
       {/* Question */}
-      <div className="mb-10">
-        <p className="text-xs text-muted mb-4">
+      <div className="mb-6">
+        <p className="text-xs text-muted mb-2">
           Question {currentQuestion + 1} of {questions.length}
         </p>
         <h2 className="text-xl font-semibold leading-relaxed">
@@ -164,7 +164,7 @@ export default function ScenarioInteraction({
       </div>
 
       {/* Answer options */}
-      <div className="space-y-3 mb-10">
+      <div className="space-y-2 mb-6">
         {question.answer_options
           .sort((a, b) => a.label.localeCompare(b.label))
           .map((option) => {
@@ -191,7 +191,7 @@ export default function ScenarioInteraction({
                 key={option.id}
                 onClick={() => handleSelect(option.id)}
                 disabled={isRevealed}
-                className={`w-full text-left px-6 py-5 border rounded-xl transition-all duration-200 ${stateStyles} ${
+                className={`w-full text-left px-5 py-3.5 border rounded-lg transition-all duration-200 ${stateStyles} ${
                   isRevealed ? "cursor-default" : "cursor-pointer"
                 }`}
               >
@@ -231,14 +231,14 @@ export default function ScenarioInteraction({
 
       {/* Reveal */}
       {isRevealed && selectedOption && correctOption && explanation && (
-        <div className="mt-12">
+        <div className="mt-8">
           {/* Score — single prominent number */}
-          <div className="text-center py-12 border-b border-border/50">
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-4">
+          <div className="text-center py-6 border-b border-border/50">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-2">
               Your Score
             </p>
             <div
-              className={`text-7xl font-bold tabular-nums ${
+              className={`text-5xl font-bold tabular-nums ${
                 selectedOption.composite >= 80
                   ? "text-success"
                   : selectedOption.composite >= 50
@@ -248,12 +248,12 @@ export default function ScenarioInteraction({
             >
               {selectedOption.composite}
             </div>
-            <p className="text-sm text-muted mt-3">out of 100</p>
+            <p className="text-xs text-muted mt-2">out of 100</p>
           </div>
 
           {/* Correct answer explanation */}
-          <div className="py-12 border-b border-border/50">
-            <p className="text-xs font-semibold uppercase tracking-widest text-success mb-6">
+          <div className="py-6 border-b border-border/50">
+            <p className="text-xs font-semibold uppercase tracking-widest text-success mb-3">
               Correct Answer &mdash; {correctOption.label}
             </p>
             <div className="text-[15px] leading-[1.8] whitespace-pre-line text-foreground/90">
@@ -268,7 +268,7 @@ export default function ScenarioInteraction({
               <div>
                 <button
                   onClick={() => toggleSection("lender")}
-                  className="w-full flex items-center justify-between py-6 text-left"
+                  className="w-full flex items-center justify-between py-4 text-left"
                 >
                   <span className="text-sm font-semibold">
                     Lender Perspective
@@ -278,7 +278,7 @@ export default function ScenarioInteraction({
                   </span>
                 </button>
                 {expandedSection === "lender" && (
-                  <div className="pb-8 text-[15px] leading-[1.8] whitespace-pre-line text-foreground/90">
+                  <div className="pb-4 text-sm leading-relaxed whitespace-pre-line text-foreground/80">
                     {explanation.lender_perspective}
                   </div>
                 )}
@@ -290,7 +290,7 @@ export default function ScenarioInteraction({
               <div>
                 <button
                   onClick={() => toggleSection("borrower")}
-                  className="w-full flex items-center justify-between py-6 text-left"
+                  className="w-full flex items-center justify-between py-4 text-left"
                 >
                   <span className="text-sm font-semibold">
                     Borrower Perspective
@@ -300,7 +300,7 @@ export default function ScenarioInteraction({
                   </span>
                 </button>
                 {expandedSection === "borrower" && (
-                  <div className="pb-8 text-[15px] leading-[1.8] whitespace-pre-line text-foreground/90">
+                  <div className="pb-4 text-sm leading-relaxed whitespace-pre-line text-foreground/80">
                     {explanation.borrower_perspective}
                   </div>
                 )}
@@ -311,7 +311,7 @@ export default function ScenarioInteraction({
             <div>
               <button
                 onClick={() => toggleSection("wrong")}
-                className="w-full flex items-center justify-between py-6 text-left"
+                className="w-full flex items-center justify-between py-4 text-left"
               >
                 <span className="text-sm font-semibold">
                   Why Other Answers Are Wrong
@@ -321,7 +321,7 @@ export default function ScenarioInteraction({
                 </span>
               </button>
               {expandedSection === "wrong" && (
-                <div className="pb-8 space-y-6">
+                <div className="pb-4 space-y-4">
                   {question.answer_options
                     .filter((a) => !a.is_correct)
                     .sort((a, b) => a.label.localeCompare(b.label))
@@ -343,7 +343,7 @@ export default function ScenarioInteraction({
             <div>
               <button
                 onClick={() => toggleSection("outcome")}
-                className="w-full flex items-center justify-between py-6 text-left"
+                className="w-full flex items-center justify-between py-4 text-left"
               >
                 <span className="text-sm font-semibold text-accent">
                   Learning Outcome
@@ -353,7 +353,7 @@ export default function ScenarioInteraction({
                 </span>
               </button>
               {expandedSection === "outcome" && (
-                <div className="pb-8 text-[15px] leading-[1.8] whitespace-pre-line text-foreground/90">
+                <div className="pb-4 text-sm leading-relaxed whitespace-pre-line text-foreground/80">
                   {explanation.learning_outcome}
                 </div>
               )}
@@ -362,7 +362,7 @@ export default function ScenarioInteraction({
 
           {/* Next */}
           {currentQuestion < questions.length - 1 && (
-            <div className="pt-12">
+            <div className="pt-6">
               <button
                 onClick={handleNext}
                 className="px-8 py-4 bg-foreground text-background rounded-full text-sm font-medium hover:opacity-90 transition-opacity"

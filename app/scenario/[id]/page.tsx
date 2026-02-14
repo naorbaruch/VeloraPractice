@@ -46,8 +46,8 @@ export default async function ScenarioPage({
       </div>
 
       {/* Scenario header */}
-      <div className="py-8 mb-8 border-b border-border/50">
-        <div className="flex items-center gap-3 mb-3">
+      <div className="pb-4 mb-4 border-b border-border/50">
+        <div className="flex items-center gap-3 mb-2">
           <span className="text-xs font-mono text-muted">
             {scenario.scenario_code}
           </span>
@@ -62,14 +62,14 @@ export default async function ScenarioPage({
       </div>
 
       {/* Two-column layout: facts left, question right */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pb-16">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10">
         {/* Left: scenario facts */}
-        <div className="space-y-8">
+        <div className="space-y-5">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-4">
               Context
             </p>
-            <div className="text-sm leading-[1.8] whitespace-pre-line text-foreground/80">
+            <div className="text-sm leading-relaxed whitespace-pre-line text-foreground/80">
               {scenario.context}
             </div>
           </div>
@@ -104,7 +104,7 @@ export default async function ScenarioPage({
         </div>
 
         {/* Right: question + answers */}
-        <div className="lg:border-l lg:border-border/50 lg:pl-12">
+        <div className="lg:border-l lg:border-border/50 lg:pl-8">
           {questions && questions.length > 0 && (
             <ScenarioInteraction questions={questions} />
           )}

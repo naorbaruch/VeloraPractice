@@ -31,8 +31,8 @@ export default function RootLayout({
       >
         <Header />
         <main className="pt-16">{children}</main>
-        <footer className="border-t border-border/50 mt-24">
-          <div className="max-w-5xl mx-auto px-8 py-8">
+        <footer className="border-t border-border/50 mt-8">
+          <div className="max-w-5xl mx-auto px-8 py-4">
             <p className="text-xs text-muted-light leading-relaxed max-w-lg">
               This is an educational tool only. It does not constitute legal or
               financial advice. No jurisdiction-specific reliance.
